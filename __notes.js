@@ -4,4 +4,6 @@
 //                    --> npm i -D typescript
 
 // ts folder structure setup --> src -> ( server.ts, app.ts )
-//
+// .env setup and setup config file and connection in server.
+//  ts config file setup
+// typescript eslint prettier setup
