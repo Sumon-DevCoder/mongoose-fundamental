@@ -24,3 +24,13 @@
 // Request Response flow of modular pattern --> client -> route -> controller -> services -> db
 
 // # validation ---> built in validation, custom validation, third party validation ( zod, validator, joi ),
+
+// # custom validation : * capitalize
+
+// # type validation npm  package --> dt and ts ditai install korte hobe.
+// example : lastname and email ar use korechi
+
+// # validation npm package Joi --> dt and ts dutai install korte hobe.
+// > obosoi controller a kaj korte hobe karon ar schema base kaj kore
+
+// # validation npm package zod -->

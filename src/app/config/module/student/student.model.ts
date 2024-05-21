@@ -1,11 +1,22 @@
 import { Schema, model } from "mongoose";
 import { Gurdian, LocalGurdian, Student, UserName } from "./student.interface";
+import validator from "validator";
 
 const userSchema = new Schema<UserName>({
   fistName: {
     type: String,
     required: [true, "first name is required"],
     maxlength: 20,
+    trim: true,
+    // custom validation
+    validate: {
+      validator: function (value: string) {
+        const firstNameString = value.charAt(0).toUpperCase() + value.slice(1);
+        console.log(value);
+        return firstNameString === value;
+      },
+      message: "{VALUE} is not capitalize format",
+    },
   },
   middleName: {
     type: String,
@@ -14,13 +25,18 @@ const userSchema = new Schema<UserName>({
   lastName: {
     type: String,
     required: [true, "last name is required"],
-    maxlength: 20,
+    // npm package validation
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: "{VALUE} is not valid",
+    },
   },
 });
 
 const gurdianSchema = new Schema<Gurdian>({
   fatherName: {
     type: String,
+    trim: true,
     required: true,
   },
   fatherOccupation: {
@@ -89,6 +105,11 @@ const studentSchema = new Schema<Student>({
     type: String,
     required: true,
     unique: true,
+    //    // npm package validation
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: "{VALUE} is not valid email type",
+    },
   },
   contactNumber: {
     type: String,

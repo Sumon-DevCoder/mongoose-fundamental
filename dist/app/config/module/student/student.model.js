@@ -1,12 +1,26 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentModel = void 0;
 const mongoose_1 = require("mongoose");
+const validator_1 = __importDefault(require("validator"));
 const userSchema = new mongoose_1.Schema({
     fistName: {
         type: String,
         required: [true, "first name is required"],
         maxlength: 20,
+        trim: true,
+        // custom validation
+        validate: {
+            validator: function (value) {
+                const firstNameString = value.charAt(0).toUpperCase() + value.slice(1);
+                console.log(value);
+                return firstNameString === value;
+            },
+            message: "{VALUE} is not capitalize format",
+        },
     },
     middleName: {
         type: String,
@@ -15,12 +29,17 @@ const userSchema = new mongoose_1.Schema({
     lastName: {
         type: String,
         required: [true, "last name is required"],
-        maxlength: 20,
+        // npm package validation
+        validate: {
+            validator: (value) => validator_1.default.isAlpha(value),
+            message: "{VALUE} is not valid",
+        },
     },
 });
 const gurdianSchema = new mongoose_1.Schema({
     fatherName: {
         type: String,
+        trim: true,
         required: true,
     },
     fatherOccupation: {
@@ -87,6 +106,11 @@ const studentSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         unique: true,
+        //    // npm package validation
+        validate: {
+            validator: (value) => validator_1.default.isEmail(value),
+            message: "{VALUE} is not valid email type",
+        },
     },
     contactNumber: {
         type: String,
