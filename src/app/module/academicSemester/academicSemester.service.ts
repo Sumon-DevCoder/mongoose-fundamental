@@ -1,4 +1,3 @@
-import httpStatus from "http-status";
 import AppError from "../../error/appError";
 import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
 import { TAcademicSemester } from "./academicSemester.interface";
