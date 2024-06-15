@@ -23,7 +23,8 @@
 
 // Request Response flow of modular pattern --> client -> route -> controller -> services -> db
 
-// # validation ---> built in validation, custom validation, third party validation ( zod, validator, joi ),
+// # mongoose ar maddoe amra data ke check korte pari je data valid kina validation ar modome
+// # validation ---> built in validation ( provide mongoose ), custom validation, third party validation ( zod, validator, joi ),
 
 // # custom validation : * capitalize
 

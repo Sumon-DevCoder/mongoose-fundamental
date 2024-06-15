@@ -5,29 +5,31 @@
   "main": "__notes.js",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint ./src --ignore-pattern .eslintignore -c .ts",
-    "dev": "nodemon ./dist/server.js"
+    "dev": "nodemon ./dist/server.js",
+    "lint": "npx eslint src --ignore-pattern .ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "joi": "^17.13.1",
+    "http-status": "^1.7.4",
     "mongoose": "^8.4.0",
     "nodemon": "^3.1.0",
     "validator": "^13.12.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.12",
     "@types/validator": "^13.11.10",
-    "@typescript-eslint/eslint-plugin": "^7.9.0",
-    "@typescript-eslint/parser": "^7.9.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
     "eslint": "^8.57.0",
     "typescript": "^5.4.5"
   }
