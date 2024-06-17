@@ -30,7 +30,6 @@ const userSchema = new mongoose_1.Schema({
         validate: {
             validator: function (value) {
                 const firstNameString = value.charAt(0).toUpperCase() + value.slice(1);
-                console.log(value);
                 return firstNameString === value;
             },
             message: "{VALUE} is not capitalize format",

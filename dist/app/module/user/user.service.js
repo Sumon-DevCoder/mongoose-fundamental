@@ -30,12 +30,16 @@ const createStudentDB = (password, payload) => __awaiter(void 0, void 0, void 0,
     userData.role = "student";
     // find academic semester info
     const admissionSemester = yield academicSemester_model_1.academicSemesterModel.findById(payload.admissionSemester);
-    // session
+    if (!admissionSemester) {
+        throw new appError_1.default(404, "admission semester not found");
+    }
+    // set mannually generate id
+    userData.id = yield (0, user_utils_1.generateStudentId)(admissionSemester);
+    // Transaction Initialization
     const session = yield mongoose_1.default.startSession();
     try {
+        // Transaction Handling
         session.startTransaction();
-        // set mannually generate id
-        userData.id = yield (0, user_utils_1.generateStudentId)(admissionSemester);
         // create a user (transction - 1)
         const newUser = yield user_model_1.UserModel.create([userData], { session });
         // create a student
@@ -51,14 +55,14 @@ const createStudentDB = (password, payload) => __awaiter(void 0, void 0, void 0,
         if (!newStudent.length) {
             throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create student");
         }
-        yield session.commitTransaction(); // for save database permanently
-        yield session.endSession(); // end session
+        yield session.commitTransaction(); // if student and user create successfully commits transaction to save database permanently
+        yield session.endSession(); // Ends the database session.
         return newStudent;
     }
     catch (err) {
-        yield session.abortTransaction();
-        yield session.endSession();
-        throw new Error(err);
+        yield session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
+        yield session.endSession(); // ends the session.
+        throw new appError_1.default(400, "student and user not created"); // throws the error.
     }
 });
 const deleteUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {

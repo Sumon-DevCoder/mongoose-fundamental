@@ -21,14 +21,12 @@ const getAllAcademicDepartmentFromDB = () => __awaiter(void 0, void 0, void 0, f
 });
 const getSingleAcademicDepartmentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield academicDepartment_model_1.AcademicDepartment.findOne({ _id: id }).populate("academicFaculty");
-    console.log("sssss", id, result);
     return result;
 });
 const updateSingleAcademicDepartmentIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield academicDepartment_model_1.AcademicDepartment.findOneAndUpdate({ _id: id }, payload, {
         new: true,
     });
-    console.log("rrr", id, payload, result);
     return result;
 });
 exports.AcademicDepartmentServices = {

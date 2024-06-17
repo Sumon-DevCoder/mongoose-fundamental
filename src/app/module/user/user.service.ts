@@ -25,15 +25,19 @@ const createStudentDB = async (password: string, payload: TStudent) => {
     payload.admissionSemester
   );
 
-  // session
+  if (!admissionSemester) {
+    throw new AppError(404, "admission semester not found");
+  }
+
+  // set mannually generate id
+  userData.id = await generateStudentId(admissionSemester as TAcademicSemester);
+
+  // Transaction Initialization
   const session = await mongoose.startSession();
 
   try {
+    // Transaction Handling
     session.startTransaction();
-    // set mannually generate id
-    userData.id = await generateStudentId(
-      admissionSemester as TAcademicSemester
-    );
 
     // create a user (transction - 1)
     const newUser = await UserModel.create([userData], { session });
@@ -53,14 +57,14 @@ const createStudentDB = async (password: string, payload: TStudent) => {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
     }
 
-    await session.commitTransaction(); // for save database permanently
-    await session.endSession(); // end session
+    await session.commitTransaction(); // if student and user create successfully commits transaction to save database permanently
+    await session.endSession(); // Ends the database session.
 
     return newStudent;
   } catch (err: any) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw new Error(err);
+    await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
+    await session.endSession(); // ends the session.
+    throw new AppError(400, "student and user not created"); // throws the error.
   }
 };
 

@@ -24,7 +24,6 @@ const userSchema = new Schema<UserName>({
     validate: {
       validator: function (value: string) {
         const firstNameString = value.charAt(0).toUpperCase() + value.slice(1);
-        console.log(value);
         return firstNameString === value;
       },
       message: "{VALUE} is not capitalize format",

@@ -26,11 +26,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentServices = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const student_model_1 = require("./student.model");
-const appError_1 = __importDefault(require("../../error/appError"));
 const http_status_1 = __importDefault(require("http-status"));
 const user_model_1 = require("../user/user.model");
-const getAllStudentFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.Student.find()
+const appError_1 = __importDefault(require("../../error/appError"));
+const getAllStudentFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryObject = Object.assign({}, query);
+    let searchTerm = ""; // set default value
+    console.log("my q", query);
+    const studentSearchableFields = ["email", "name.firstName", "presentAddress"];
+    if (query === null || query === void 0 ? void 0 : query.searchTerm) {
+        searchTerm = query === null || query === void 0 ? void 0 : query.searchTerm;
+    }
+    const searchQuery = student_model_1.Student.find({
+        $or: studentSearchableFields.map((field) => ({
+            [field]: { $regex: searchTerm, $options: "i" },
+        })),
+    });
+    // filtering
+    const excludeFields = ["searchTerm", "sort"];
+    excludeFields.forEach((el) => delete queryObject[el]); // delete method
+    console.log("cc", query, queryObject);
+    const result = searchQuery
+        .find(query)
         .populate("admissionSemester")
         .populate({
         path: "academicDepartment",
@@ -48,6 +65,34 @@ const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, functio
         populate: {
             path: "academicFaculty",
         },
+    });
+    return result;
+});
+const updateSingleStudentFromDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // descturing non premitive data from payload
+    const { name, guardian, localGuardian } = payload, remainingStudentData = __rest(payload, ["name", "guardian", "localGuardian"]);
+    const modifiedUpdatedData = Object.assign({}, remainingStudentData);
+    // name
+    if (name && Object.keys(name).length) {
+        for (const [key, value] of Object.entries(name)) {
+            modifiedUpdatedData[`name.${key}`] = value;
+        }
+    }
+    // guardian
+    if (guardian && Object.keys(guardian).length) {
+        for (const [key, value] of Object.entries(guardian)) {
+            modifiedUpdatedData[`guardian.${key}`] = value;
+        }
+    }
+    // localGuardian
+    if (localGuardian && Object.keys(localGuardian).length) {
+        for (const [key, value] of Object.entries(localGuardian)) {
+            modifiedUpdatedData[`localGuardian.${key}`] = value;
+        }
+    }
+    const result = yield student_model_1.Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+        new: true,
+        runValidators: true,
     });
     return result;
 });
@@ -72,35 +117,6 @@ const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, func
         yield session.endSession();
         throw new Error(err);
     }
-});
-const updateSingleStudentFromDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // descturing non premitive data from payload
-    const { name, guardian, localGuardian } = payload, remainingStudentData = __rest(payload, ["name", "guardian", "localGuardian"]);
-    const modifiedUpdatedData = Object.assign({}, remainingStudentData);
-    // name
-    if (name && Object.keys(name).length) {
-        for (const [key, value] of Object.entries(name)) {
-            modifiedUpdatedData[`name.${key}`] = value;
-        }
-    }
-    // guardian
-    if (guardian && Object.keys(guardian).length) {
-        for (const [key, value] of Object.entries(guardian)) {
-            modifiedUpdatedData[`guardian.${key}`] = value;
-        }
-    }
-    // localGuardian
-    if (localGuardian && Object.keys(localGuardian).length) {
-        for (const [key, value] of Object.entries(localGuardian)) {
-            modifiedUpdatedData[`localGuardian.${key}`] = value;
-        }
-    }
-    console.log("modifiedUpdatedData", modifiedUpdatedData);
-    const result = yield student_model_1.Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
-        new: true,
-        runValidators: true,
-    });
-    return result;
 });
 exports.StudentServices = {
     getAllStudentFromDB,

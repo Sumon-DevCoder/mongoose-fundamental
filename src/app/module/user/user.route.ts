@@ -7,11 +7,14 @@ const router = express.Router();
 
 router.post(
   "/create-student",
-  validationRequest(studentValidations.createStudentValidationSchema),
+  // validationRequest(studentValidations.createStudentValidationSchema),
   UserControllers.createStudent
 );
-router.delete("/:userId", UserControllers.deleteUser);
+
 router.get("/", UserControllers.getAllUser);
+
 router.get("/:id", UserControllers.getSingleUser);
+
+router.delete("/:userId", UserControllers.deleteUser);
 
 export const UserRoutes = router;

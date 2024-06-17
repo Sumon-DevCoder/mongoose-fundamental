@@ -58,21 +58,17 @@ userSchema.pre("save", function (next) {
 // post save middleware / hooks
 userSchema.post("save", function (doc, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        // console.log(this, "post hook - we save our data");
         doc.password = "";
-        console.log("dccccc", doc);
         next();
     });
 });
 // query middleware --> using find
 userSchema.pre("find", function (next) {
-    console.log(this);
     this.find({ isDeleted: { $ne: true } });
     next();
 });
 // query middleware --> using findOne
 userSchema.pre("findOne", function (next) {
-    console.log(this);
     this.findOne({ isDeleted: { $ne: true } });
     next();
 });

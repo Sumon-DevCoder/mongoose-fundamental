@@ -16,8 +16,6 @@ const getSingleAcademicDepartmentFromDB = async (id: string) => {
     "academicFaculty"
   );
 
-  console.log("sssss", id, result);
-
   return result;
 };
 
@@ -33,7 +31,6 @@ const updateSingleAcademicDepartmentIntoDB = async (
     }
   );
 
-  console.log("rrr", id, payload, result);
   return result;
 };
 
