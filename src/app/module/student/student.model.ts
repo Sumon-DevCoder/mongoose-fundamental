@@ -8,7 +8,6 @@ import {
 } from "./student.interface";
 import validator from "validator";
 import AppError from "../../error/appError";
-import httpStatus from "http-status";
 
 const userSchema = new Schema<UserName>({
   firstName: {
@@ -180,7 +179,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 
 // virtual
 studentSchema.virtual("fullName").get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
 // create custom instance method
@@ -206,6 +205,18 @@ studentSchema.pre("findOneAndUpdate", async function (next) {
   }
 
   next();
+});
+
+studentSchema.pre("findOne", async function () {
+  const query = this.getQuery();
+
+  const isStudentExists = await Student.find(query);
+
+  console.log(isStudentExists);
+
+  if (!isStudentExists.length) {
+    throw new AppError(404, "student not found");
+  }
 });
 
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);

@@ -1,4 +1,5 @@
 import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
+import { TAdmin } from "../admin/admin.interface";
 import { UserModel } from "./user.model";
 
 const findLastStudentId = async () => {
@@ -43,4 +44,33 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
 
   incrementId = `${payload.year}${payload.code}${incrementId}`;
   return incrementId;
+};
+
+export const generateAdminId = async () => {
+  // first time 0000
+  let currentId = (0).toString(); // by default 0000
+
+  console.log("check c id", currentId);
+
+  return currentId;
+
+  // // 2030 01 0001
+  // const lastStudentId = await findLastStudentId();
+  // const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
+  // const lastStudentYear = lastStudentId?.substring(0, 4);
+  // const currentSemesterCode = payload.code;
+  // const currentYear = payload.year;
+
+  // if (
+  //   lastStudentId &&
+  //   lastStudentSemesterCode === currentSemesterCode &&
+  //   lastStudentYear === currentYear
+  // ) {
+  //   currentId = lastStudentId.substring(6); // 0001
+  // }
+
+  // let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
+
+  // incrementId = `${payload.year}${payload.code}${incrementId}`;
+  // return incrementId;
 };

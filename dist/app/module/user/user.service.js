@@ -21,7 +21,9 @@ const user_model_1 = require("./user.model");
 const user_utils_1 = require("./user.utils");
 const mongoose_1 = __importDefault(require("mongoose"));
 const appError_1 = __importDefault(require("../../error/appError"));
-const createStudentDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const faculty_model_1 = require("../faculty/faculty.model");
+// create student
+const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // create a user object
     const userData = {};
     // if password not given use default password
@@ -65,6 +67,87 @@ const createStudentDB = (password, payload) => __awaiter(void 0, void 0, void 0,
         throw new appError_1.default(400, "student and user not created"); // throws the error.
     }
 });
+// create admin
+const createAdminIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // create a user object
+    const userData = {};
+    // if password not given use default password
+    userData.password = password || config_1.default.default_password;
+    // set student role
+    userData.role = "admin";
+    // set mannually generate id
+    userData.id = yield (0, user_utils_1.generateAdminId)();
+    // Transaction Initialization
+    const session = yield mongoose_1.default.startSession();
+    try {
+        // Transaction start
+        session.startTransaction();
+        // create a user (transction - 1)
+        const newUser = yield user_model_1.UserModel.create([userData], { session });
+        // create a student
+        if (!newUser.length) {
+            throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create user");
+        }
+        else {
+            payload.id = newUser[0].id; // embedded id
+            payload.user = newUser[0]._id; // reference id
+        }
+        // create a student (transction - 2)
+        const newStudent = yield student_model_1.Student.create([payload], { session });
+        if (!newStudent.length) {
+            throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create student");
+        }
+        yield session.commitTransaction(); // if admin and user create successfully commits transaction to save database permanently
+        yield session.endSession(); // Ends the database session.
+        return newStudent;
+    }
+    catch (err) {
+        yield session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
+        yield session.endSession(); // ends the session.
+        throw new appError_1.default(400, "student and user not created"); // throws the error.
+    }
+});
+// create faculty
+const createFacultyIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // create a user object
+    const userData = {};
+    // if password not given use default password
+    userData.password = password || config_1.default.default_password;
+    // set student role
+    userData.role = "faculty";
+    // set mannually generate id
+    userData.id = yield (0, user_utils_1.generateAdminId)();
+    // Transaction Initialization
+    const session = yield mongoose_1.default.startSession();
+    try {
+        // Transaction start
+        session.startTransaction();
+        // create a user (transction - 1)
+        const newUser = yield user_model_1.UserModel.create([userData], { session });
+        // create a student
+        if (!newUser.length) {
+            throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create user");
+        }
+        else {
+            payload.id = newUser[0].id; // embedded id
+            payload.user = newUser[0]._id; // reference id
+        }
+        // create a student (transction - 2)
+        const newFaculty = yield faculty_model_1.Faculty.create([payload], { session });
+        if (!newFaculty.length) {
+            throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create faculty");
+        }
+        yield session.commitTransaction(); // if admin and user create successfully commits transaction to save database permanently
+        yield session.endSession(); // Ends the database session.
+        return newFaculty;
+    }
+    catch (err) {
+        yield session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
+        yield session.endSession(); // ends the session.
+        throw new appError_1.default(400, "student and user not created"); // throws the error.
+    }
+});
+// delete
 const deleteUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.UserModel.updateOne({ id }, { isDeleted: true });
     return result;
@@ -79,8 +162,10 @@ const getSingleUsersFromDB = (id) => __awaiter(void 0, void 0, void 0, function*
     return result;
 });
 exports.UserServices = {
-    createStudentDB,
+    createAdminIntoDB,
+    createStudentIntoDB,
     deleteUserFromDB,
     getAllUsersFromDB,
     getSingleUsersFromDB,
+    createFacultyIntoDB,
 };

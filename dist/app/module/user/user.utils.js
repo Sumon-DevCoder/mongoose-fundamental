@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateStudentId = void 0;
+exports.generateAdminId = exports.generateStudentId = void 0;
 const user_model_1 = require("./user.model");
 const findLastStudentId = () => __awaiter(void 0, void 0, void 0, function* () {
     const lastStudent = yield user_model_1.UserModel.findOne({
@@ -44,3 +44,26 @@ const generateStudentId = (payload) => __awaiter(void 0, void 0, void 0, functio
     return incrementId;
 });
 exports.generateStudentId = generateStudentId;
+const generateAdminId = () => __awaiter(void 0, void 0, void 0, function* () {
+    // first time 0000
+    let currentId = (0).toString(); // by default 0000
+    console.log("check c id", currentId);
+    return currentId;
+    // // 2030 01 0001
+    // const lastStudentId = await findLastStudentId();
+    // const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
+    // const lastStudentYear = lastStudentId?.substring(0, 4);
+    // const currentSemesterCode = payload.code;
+    // const currentYear = payload.year;
+    // if (
+    //   lastStudentId &&
+    //   lastStudentSemesterCode === currentSemesterCode &&
+    //   lastStudentYear === currentYear
+    // ) {
+    //   currentId = lastStudentId.substring(6); // 0001
+    // }
+    // let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
+    // incrementId = `${payload.year}${payload.code}${incrementId}`;
+    // return incrementId;
+});
+exports.generateAdminId = generateAdminId;

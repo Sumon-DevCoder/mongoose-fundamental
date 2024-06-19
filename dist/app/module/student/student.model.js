@@ -178,7 +178,8 @@ const studentSchema = new mongoose_1.Schema({
 });
 // virtual
 studentSchema.virtual("fullName").get(function () {
-    return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+    var _a, _b, _c;
+    return `${(_a = this === null || this === void 0 ? void 0 : this.name) === null || _a === void 0 ? void 0 : _a.firstName} ${(_b = this === null || this === void 0 ? void 0 : this.name) === null || _b === void 0 ? void 0 : _b.middleName} ${(_c = this === null || this === void 0 ? void 0 : this.name) === null || _c === void 0 ? void 0 : _c.lastName}`;
 });
 // create custom instance method
 // studentSchema.methods.isUserExist = async function (id: string) {
@@ -201,6 +202,16 @@ studentSchema.pre("findOneAndUpdate", function (next) {
             throw new appError_1.default(404, "Student does not exists!");
         }
         next();
+    });
+});
+studentSchema.pre("findOne", function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        const query = this.getQuery();
+        const isStudentExists = yield exports.Student.find(query);
+        console.log(isStudentExists);
+        if (!isStudentExists.length) {
+            throw new appError_1.default(404, "student not found");
+        }
     });
 });
 exports.Student = (0, mongoose_1.model)("Student", studentSchema);

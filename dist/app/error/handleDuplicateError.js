@@ -9,7 +9,7 @@ const handleDuplicateError = (err) => {
     const errorSources = [
         {
             path: "",
-            message: ` ${extractedMessage} is already exists!`,
+            message: `${extractedMessage} is already exists!`,
         },
     ];
     const statusCode = 400;
