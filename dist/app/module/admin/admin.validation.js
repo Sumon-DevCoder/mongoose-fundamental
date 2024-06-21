@@ -15,7 +15,8 @@ exports.createUserNameValidationSchema = zod_1.z.object({
         required_error: "middleName is required",
     })
         .min(3)
-        .max(20),
+        .max(20)
+        .optional(),
     lastName: zod_1.z
         .string({
         required_error: "lastName is required",
@@ -31,8 +32,8 @@ exports.createAdminValidationSchema = zod_1.z.object({
             name: exports.createUserNameValidationSchema,
             gender: zod_1.z.enum([...admin_constant_1.Gender]),
             dateOfBirth: zod_1.z
-                .string()
-                // .date({ required_error: "Date of birth is required" })
+                .string({ required_error: "Date of birth is required" })
+                .date()
                 .optional(),
             email: zod_1.z.string().email("Invalid email"),
             bloogGroup: zod_1.z.enum([...admin_constant_1.BloodGroup]).optional(),

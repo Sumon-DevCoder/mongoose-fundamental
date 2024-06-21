@@ -47,7 +47,10 @@ const createStudentValidationSchema = z.object({
             "The gender field can only be one of the following values: male, female, other",
         }),
       }),
-      dateOfBirth: z.string(),
+      dateOfBirth: z
+        .string({ required_error: "Date of birth is required" })
+        .date()
+        .optional(),
       email: z.string().min(1).email({ message: "Email is not a valid email" }),
       contactNumber: z.string().min(1),
       bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),

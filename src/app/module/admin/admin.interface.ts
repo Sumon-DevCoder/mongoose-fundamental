@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export type TUserName = {
   firstName: string;
   middleName: string;
@@ -17,7 +19,7 @@ export type TBloodGroup =
 export type TGender = "Male" | "Female" | "Other";
 
 export type TAdmin = {
-  user: import("mongoose").Types.ObjectId;
+  user: Types.ObjectId; // ref
   id: string;
   designation: string;
   name: TUserName;

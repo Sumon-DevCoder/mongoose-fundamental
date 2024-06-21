@@ -13,7 +13,8 @@ export const createUserNameValidationSchema = z.object({
       required_error: "middleName is required",
     })
     .min(3)
-    .max(20),
+    .max(20)
+    .optional(),
   lastName: z
     .string({
       required_error: "lastName is required",
@@ -30,8 +31,8 @@ export const createAdminValidationSchema = z.object({
       name: createUserNameValidationSchema,
       gender: z.enum([...Gender] as [string, ...string[]]),
       dateOfBirth: z
-        .string()
-        // .date({ required_error: "Date of birth is required" })
+        .string({ required_error: "Date of birth is required" })
+        .date()
         .optional(),
       email: z.string().email("Invalid email"),
       bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),

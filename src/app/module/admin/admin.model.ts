@@ -3,14 +3,33 @@ import { TAdmin, TUserName } from "./admin.interface";
 import { Gender, BloodGroup } from "./admin.constant";
 
 const UserNameSchema = new Schema<TUserName>({
-  firstName: { type: String, required: true },
-  middleName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  firstName: {
+    type: String,
+    required: true,
+    maxlength: 20,
+    trim: true,
+    validate: {
+      // custom validation
+      validator: function (value: string) {
+        const firstNameString = value.charAt(0).toUpperCase() + value.slice(1);
+        return firstNameString === value;
+      },
+      message: "{VALUE} is not capitalize format",
+    },
+  },
+  middleName: { type: String, maxlength: 20, trim: true },
+  lastName: { type: String, required: true, maxlength: 20, trim: true },
 });
 
 const AdminSchema = new Schema<TAdmin>(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true }, // generated id
+    user: {
+      type: Schema.Types.ObjectId,
+      unique: true,
+      required: [true, "user id is required"],
+      ref: "User", // ref
+    },
     designation: { type: String, required: [true, "designation is required"] },
     name: { type: UserNameSchema, required: [true, "Name is required"] },
     gender: {
@@ -50,5 +69,19 @@ const AdminSchema = new Schema<TAdmin>(
   },
   { timestamps: true }
 );
+
+AdminSchema.pre("save", async function (next) {
+  const isAdminExists = await Admin.findOne({ email: this.email });
+
+  console.log("isAdminExists", isAdminExists);
+});
+
+AdminSchema.pre("find", async function (next) {
+  const query = this.getQuery();
+  console.log("middleware query", query);
+  // const isAdminDataExist = await Admin.find(query);
+
+  // console.log("isAdminDataExist", isAdminDataExist);
+});
 
 export const Admin = mongoose.model<TAdmin>("Admin", AdminSchema);

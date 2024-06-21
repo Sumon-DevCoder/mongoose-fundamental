@@ -12,6 +12,7 @@ import AppError from "../../error/appError";
 import { TAdmin } from "../admin/admin.interface";
 import { TFaculty } from "../faculty/faculty.interface";
 import { Faculty } from "../faculty/faculty.model";
+import { Admin } from "../admin/admin.model";
 
 // create student
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -74,7 +75,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
 // create admin
 const createAdminIntoDB = async (password: string, payload: TAdmin) => {
-  // create a user object
+  // create a user obj
   const userData: Partial<TUser> = {};
 
   // if password not given use default password
@@ -96,7 +97,7 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     // create a user (transction - 1)
     const newUser = await UserModel.create([userData], { session });
 
-    // create a student
+    // create a user
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
     } else {
@@ -104,21 +105,21 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
       payload.user = newUser[0]._id; // reference id
     }
 
-    // create a student (transction - 2)
-    const newStudent = await Student.create([payload], { session });
+    // create a admin (transction - 2)
+    const newAdmin = await Admin.create([payload], { session });
 
-    if (!newStudent.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
+    if (!newAdmin.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create Admin");
     }
 
     await session.commitTransaction(); // if admin and user create successfully commits transaction to save database permanently
     await session.endSession(); // Ends the database session.
 
-    return newStudent;
+    return newAdmin;
   } catch (err: any) {
     await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
     await session.endSession(); // ends the session.
-    throw new AppError(400, "student and user not created"); // throws the error.
+    throw new AppError(400, "admin and user not created"); // throws the error.
   }
 };
 

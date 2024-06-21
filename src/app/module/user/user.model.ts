@@ -58,14 +58,12 @@ userSchema.post("save", async function (doc, next) {
 
 // query middleware --> using find
 userSchema.pre("find", function (next) {
-
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
 // query middleware --> using findOne
 userSchema.pre("findOne", function (next) {
-
   this.findOne({ isDeleted: { $ne: true } });
   next();
 });

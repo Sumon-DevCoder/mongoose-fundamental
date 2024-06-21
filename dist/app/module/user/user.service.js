@@ -22,6 +22,7 @@ const user_utils_1 = require("./user.utils");
 const mongoose_1 = __importDefault(require("mongoose"));
 const appError_1 = __importDefault(require("../../error/appError"));
 const faculty_model_1 = require("../faculty/faculty.model");
+const admin_model_1 = require("../admin/admin.model");
 // create student
 const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // create a user object
@@ -69,7 +70,7 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
 });
 // create admin
 const createAdminIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // create a user object
+    // create a user obj
     const userData = {};
     // if password not given use default password
     userData.password = password || config_1.default.default_password;
@@ -84,7 +85,7 @@ const createAdminIntoDB = (password, payload) => __awaiter(void 0, void 0, void 
         session.startTransaction();
         // create a user (transction - 1)
         const newUser = yield user_model_1.UserModel.create([userData], { session });
-        // create a student
+        // create a user
         if (!newUser.length) {
             throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create user");
         }
@@ -92,19 +93,19 @@ const createAdminIntoDB = (password, payload) => __awaiter(void 0, void 0, void 
             payload.id = newUser[0].id; // embedded id
             payload.user = newUser[0]._id; // reference id
         }
-        // create a student (transction - 2)
-        const newStudent = yield student_model_1.Student.create([payload], { session });
-        if (!newStudent.length) {
-            throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create student");
+        // create a admin (transction - 2)
+        const newAdmin = yield admin_model_1.Admin.create([payload], { session });
+        if (!newAdmin.length) {
+            throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create Admin");
         }
         yield session.commitTransaction(); // if admin and user create successfully commits transaction to save database permanently
         yield session.endSession(); // Ends the database session.
-        return newStudent;
+        return newAdmin;
     }
     catch (err) {
         yield session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
         yield session.endSession(); // ends the session.
-        throw new appError_1.default(400, "student and user not created"); // throws the error.
+        throw new appError_1.default(400, "admin and user not created"); // throws the error.
     }
 });
 // create faculty

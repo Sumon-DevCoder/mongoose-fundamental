@@ -45,25 +45,11 @@ const generateStudentId = (payload) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.generateStudentId = generateStudentId;
 const generateAdminId = () => __awaiter(void 0, void 0, void 0, function* () {
-    // first time 0000
-    let currentId = (0).toString(); // by default 0000
-    console.log("check c id", currentId);
-    return currentId;
-    // // 2030 01 0001
-    // const lastStudentId = await findLastStudentId();
-    // const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
-    // const lastStudentYear = lastStudentId?.substring(0, 4);
-    // const currentSemesterCode = payload.code;
-    // const currentYear = payload.year;
-    // if (
-    //   lastStudentId &&
-    //   lastStudentSemesterCode === currentSemesterCode &&
-    //   lastStudentYear === currentYear
-    // ) {
-    //   currentId = lastStudentId.substring(6); // 0001
-    // }
-    // let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
-    // incrementId = `${payload.year}${payload.code}${incrementId}`;
-    // return incrementId;
+    const currentId = (0).toString(); // output: "0"
+    const incrementId = Number(currentId + 3)
+        .toString()
+        .padStart(4, "0");
+    console.log("check c and i id", currentId, incrementId);
+    return incrementId;
 });
 exports.generateAdminId = generateAdminId;
