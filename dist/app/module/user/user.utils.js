@@ -26,8 +26,7 @@ const findLastStudentId = () => __awaiter(void 0, void 0, void 0, function* () {
     return (lastStudent === null || lastStudent === void 0 ? void 0 : lastStudent.id) ? lastStudent.id : undefined;
 });
 const generateStudentId = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // first time 0000
-    let currentId = (0).toString(); // by default 0000
+    let currentId = (0).toString(); // by default "0"
     // 2030 01 0001
     const lastStudentId = yield findLastStudentId();
     const lastStudentSemesterCode = lastStudentId === null || lastStudentId === void 0 ? void 0 : lastStudentId.substring(4, 6);
@@ -44,12 +43,17 @@ const generateStudentId = (payload) => __awaiter(void 0, void 0, void 0, functio
     return incrementId;
 });
 exports.generateStudentId = generateStudentId;
-const generateAdminId = () => __awaiter(void 0, void 0, void 0, function* () {
-    const currentId = (0).toString(); // output: "0"
-    const incrementId = Number(currentId + 3)
-        .toString()
-        .padStart(4, "0");
-    console.log("check c and i id", currentId, incrementId);
+// admin id generate
+const generateAdminId = (adminId) => __awaiter(void 0, void 0, void 0, function* () {
+    // const currentId = (0).toString(); // output: "0"
+    let currentAdminId = adminId.toString().substring(3, 4);
+    console.log("currentAdminId", currentAdminId);
+    console.log("currentAdminId type", typeof currentAdminId);
+    let finalNumber = Number(currentAdminId) + 1;
+    console.log("finalNumber", finalNumber);
+    console.log("finalNumber type", typeof finalNumber);
+    const incrementId = finalNumber.toString().padStart(4, "0");
+    console.log("incrementId ss", incrementId);
     return incrementId;
 });
 exports.generateAdminId = generateAdminId;

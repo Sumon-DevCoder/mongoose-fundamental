@@ -70,14 +70,16 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
 });
 // create admin
 const createAdminIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     // create a user obj
     const userData = {};
     // if password not given use default password
     userData.password = password || config_1.default.default_password;
     // set student role
     userData.role = "admin";
+    const AdminData = yield admin_model_1.Admin.find();
     // set mannually generate id
-    userData.id = yield (0, user_utils_1.generateAdminId)();
+    userData.id = yield (0, user_utils_1.generateAdminId)((_a = AdminData[0]) === null || _a === void 0 ? void 0 : _a.id);
     // Transaction Initialization
     const session = yield mongoose_1.default.startSession();
     try {

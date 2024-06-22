@@ -70,11 +70,11 @@ const AdminSchema = new Schema<TAdmin>(
   { timestamps: true }
 );
 
-AdminSchema.pre("save", async function (next) {
-  const isAdminExists = await Admin.findOne({ email: this.email });
+// AdminSchema.pre("save", async function (next) {
+//   const isAdminExists = await Admin.findOne({ email: this.email });
 
-  console.log("isAdminExists", isAdminExists);
-});
+//   console.log("isAdminExists", isAdminExists);
+// });
 
 AdminSchema.pre("find", async function (next) {
   const query = this.getQuery();

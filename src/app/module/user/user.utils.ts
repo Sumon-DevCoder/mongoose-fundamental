@@ -22,8 +22,7 @@ const findLastStudentId = async () => {
 };
 
 export const generateStudentId = async (payload: TAcademicSemester) => {
-  // first time 0000
-  let currentId = (0).toString(); // by default 0000
+  let currentId = (0).toString(); // by default "0"
 
   // 2030 01 0001
   const lastStudentId = await findLastStudentId();
@@ -46,14 +45,24 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
   return incrementId;
 };
 
-export const generateAdminId = async () => {
-  const currentId = (0).toString(); // output: "0"
+// admin id generate
 
-  const incrementId = Number(currentId + 3)
-    .toString()
-    .padStart(4, "0");
+export const generateAdminId = async (adminId: number) => {
+  // const currentId = (0).toString(); // output: "0"
 
-  console.log("check c and i id", currentId, incrementId);
+  let currentAdminId = adminId.toString().substring(3, 4);
+
+  console.log("currentAdminId", currentAdminId);
+  console.log("currentAdminId type", typeof currentAdminId);
+
+  let finalNumber = Number(currentAdminId) + 1;
+
+  console.log("finalNumber", finalNumber);
+  console.log("finalNumber type", typeof finalNumber);
+
+  const incrementId = finalNumber.toString().padStart(4, "0");
+
+  console.log("incrementId ss", incrementId);
 
   return incrementId;
 };

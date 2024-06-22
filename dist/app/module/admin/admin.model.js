@@ -98,12 +98,10 @@ const AdminSchema = new mongoose_1.Schema({
     profileImage: { type: String, required: [true, "profileImg is required"] },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
-AdminSchema.pre("save", function (next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const isAdminExists = yield exports.Admin.findOne({ email: this.email });
-        console.log("isAdminExists", isAdminExists);
-    });
-});
+// AdminSchema.pre("save", async function (next) {
+//   const isAdminExists = await Admin.findOne({ email: this.email });
+//   console.log("isAdminExists", isAdminExists);
+// });
 AdminSchema.pre("find", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = this.getQuery();
