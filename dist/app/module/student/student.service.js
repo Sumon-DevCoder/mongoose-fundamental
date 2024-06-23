@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -31,7 +22,7 @@ const user_model_1 = require("../user/user.model");
 const appError_1 = __importDefault(require("../../error/appError"));
 const student_constant_1 = require("./student.constant");
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
-const getAllStudentFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllStudentFromDB = async (query) => {
     // ---------------------------
     // Raw Searching mehtod
     // ---------------------------
@@ -100,11 +91,11 @@ const getAllStudentFromDB = (query) => __awaiter(void 0, void 0, void 0, functio
         .sort()
         .paginate()
         .fields();
-    const result = yield studentQuery.modelQuery;
+    const result = await studentQuery.modelQuery;
     return result;
-});
-const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.Student.findOne({ id })
+};
+const getSingleStudentFromDB = async (id) => {
+    const result = await student_model_1.Student.findOne({ id })
         .populate("admissionSemester")
         .populate({
         path: "academicDepartment",
@@ -113,8 +104,8 @@ const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, functio
         },
     });
     return result;
-});
-const updateSingleStudentFromDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+};
+const updateSingleStudentFromDB = async (id, payload) => {
     // descturing non premitive data from payload
     const { name, guardian, localGuardian } = payload, remainingStudentData = __rest(payload, ["name", "guardian", "localGuardian"]);
     const modifiedUpdatedData = Object.assign({}, remainingStudentData);
@@ -136,34 +127,33 @@ const updateSingleStudentFromDB = (id, payload) => __awaiter(void 0, void 0, voi
             modifiedUpdatedData[`localGuardian.${key}`] = value;
         }
     }
-    const result = yield student_model_1.Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+    const result = await student_model_1.Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
         new: true,
         runValidators: true,
     });
-    return result;
-});
-const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const session = yield mongoose_1.default.startSession();
+};
+const deleteSingleStudentFromDB = async (id) => {
+    const session = await mongoose_1.default.startSession();
     try {
         session.startTransaction();
-        const deletedStudent = yield student_model_1.Student.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+        const deletedStudent = await student_model_1.Student.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
         if (!deletedStudent) {
             throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to delete student");
         }
-        const deletedUser = yield user_model_1.UserModel.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+        const deletedUser = await user_model_1.UserModel.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
         if (!deletedUser) {
             throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to delete user");
         }
-        yield session.commitTransaction(); // delete parmanently to database
-        yield session.endSession();
+        await session.commitTransaction(); // delete parmanently to database
+        await session.endSession();
         return deletedUser;
     }
     catch (err) {
-        yield session.abortTransaction();
-        yield session.endSession();
+        await session.abortTransaction();
+        await session.endSession();
         throw new Error(err);
     }
-});
+};
 exports.StudentServices = {
     getAllStudentFromDB,
     deleteSingleStudentFromDB,

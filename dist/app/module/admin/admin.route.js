@@ -8,4 +8,6 @@ const express_1 = __importDefault(require("express"));
 const admin_controller_1 = require("./admin.controller");
 const router = express_1.default.Router();
 router.get("/", admin_controller_1.AdminControllers.getAllAdmin);
+router.get("/:adminId", admin_controller_1.AdminControllers.getSingleAdmin);
+router.patch("/:adminId", admin_controller_1.AdminControllers.updateSingleAdmin);
 exports.AdminRoutes = router;

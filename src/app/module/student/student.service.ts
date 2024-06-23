@@ -133,8 +133,6 @@ const updateSingleStudentFromDB = async (
     new: true,
     runValidators: true,
   });
-
-  return result;
 };
 
 const deleteSingleStudentFromDB = async (id: string) => {

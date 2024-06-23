@@ -84,10 +84,8 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   // set student role
   userData.role = "admin";
 
-  const AdminData = await Admin.find();
-
   // set mannually generate id
-  userData.id = await generateAdminId(AdminData[0]?.id);
+  userData.id = await generateAdminId();
 
   // Transaction Initialization
   const session = await mongoose.startSession();
@@ -137,7 +135,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   userData.role = "faculty";
 
   // set mannually generate id
-  userData.id = await generateAdminId();
+  // userData.id = await generateAdminId();
 
   // Transaction Initialization
   const session = await mongoose.startSession();

@@ -1,5 +1,4 @@
 import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
-import { TAdmin } from "../admin/admin.interface";
 import { UserModel } from "./user.model";
 
 const findLastStudentId = async () => {
@@ -45,24 +44,35 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
   return incrementId;
 };
 
-// admin id generate
+// Admin ID Generate
+const findLastAdminId = async () => {
+  const lastAdmin = await UserModel.findOne(
+    {
+      role: "admin",
+    },
+    {
+      id: 1,
+      _id: 0,
+    }
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
 
-export const generateAdminId = async (adminId: number) => {
-  // const currentId = (0).toString(); // output: "0"
+  return lastAdmin?.id ? lastAdmin.id : undefined; // output: "A-0001"
+};
 
-  let currentAdminId = adminId.toString().substring(3, 4);
+export const generateAdminId = async () => {
+  let currentId = (0).toString(); // output: "0"
+  const lastAdminId = await findLastAdminId();
 
-  console.log("currentAdminId", currentAdminId);
-  console.log("currentAdminId type", typeof currentAdminId);
+  if (lastAdminId) {
+    currentId = lastAdminId.substring(5, 6); // output: "1"
+  }
 
-  let finalNumber = Number(currentAdminId) + 1;
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
 
-  console.log("finalNumber", finalNumber);
-  console.log("finalNumber type", typeof finalNumber);
-
-  const incrementId = finalNumber.toString().padStart(4, "0");
-
-  console.log("incrementId ss", incrementId);
-
+  incrementId = `A-${incrementId}`;
   return incrementId;
 };

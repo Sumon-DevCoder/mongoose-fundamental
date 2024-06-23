@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -187,31 +178,25 @@ studentSchema.virtual("fullName").get(function () {
 //   return existingUser;
 // };
 // create custom static method
-studentSchema.statics.isUserExists = function (id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const existingUser = yield exports.Student.findOne({ id });
-        return existingUser;
-    });
+studentSchema.statics.isUserExists = async function (id) {
+    const existingUser = await exports.Student.findOne({ id });
+    return existingUser;
 };
 // in delete time existingStudent checking
-studentSchema.pre("findOneAndUpdate", function (next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const query = this.getQuery();
-        const existingStudent = yield exports.Student.findOne(query);
-        if (!existingStudent) {
-            throw new appError_1.default(404, "Student does not exists!");
-        }
-        next();
-    });
+studentSchema.pre("findOneAndUpdate", async function (next) {
+    const query = this.getQuery();
+    const existingStudent = await exports.Student.findOne(query);
+    if (!existingStudent) {
+        throw new appError_1.default(404, "Student does not exists!");
+    }
+    next();
 });
-studentSchema.pre("findOne", function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        const query = this.getQuery();
-        const isStudentExists = yield exports.Student.find(query);
-        console.log(isStudentExists);
-        if (!isStudentExists.length) {
-            throw new appError_1.default(404, "student not found");
-        }
-    });
+studentSchema.pre("findOne", async function () {
+    const query = this.getQuery();
+    const isStudentExists = await exports.Student.find(query);
+    console.log(isStudentExists);
+    if (!isStudentExists.length) {
+        throw new appError_1.default(404, "student not found");
+    }
 });
 exports.Student = (0, mongoose_1.model)("Student", studentSchema);

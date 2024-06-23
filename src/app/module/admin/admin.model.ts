@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 import { TAdmin, TUserName } from "./admin.interface";
 import { Gender, BloodGroup } from "./admin.constant";
+import AppError from "../../error/appError";
+import httpStatus from "http-status";
 
 const UserNameSchema = new Schema<TUserName>({
   firstName: {
@@ -76,12 +78,34 @@ const AdminSchema = new Schema<TAdmin>(
 //   console.log("isAdminExists", isAdminExists);
 // });
 
+// query validation
 AdminSchema.pre("find", async function (next) {
   const query = this.getQuery();
-  console.log("middleware query", query);
-  // const isAdminDataExist = await Admin.find(query);
 
-  // console.log("isAdminDataExist", isAdminDataExist);
+  const isAdminDataExist = await Admin.findOne(query);
+
+  if (!isAdminDataExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "data not exists!");
+  }
+
+  next();
+});
+
+// single id validation
+AdminSchema.pre("findOne", async function (next) {
+  const query = this.getQuery();
+
+  console.log("middleware query", query);
+
+  //   const isDataExists = await Admin.find(query);
+
+  //   console.log("isDataExists", isDataExists);
+
+  //   if (!isDataExists) {
+  //     throw new AppError(httpStatus.NOT_FOUND, "data not exists!");
+  //   }
+
+  //   next();
 });
 
 export const Admin = mongoose.model<TAdmin>("Admin", AdminSchema);
