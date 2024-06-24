@@ -31,9 +31,9 @@ const createAdmin = (0, catchAsync_1.default)(async (req, res) => {
     });
 });
 // create faculty
-const createFaculty = (0, catchAsync_1.default)(async (req, res) => {
+const createFaculty = (0, catchAsync_1.default)(async (req, res, next) => {
     const { password, faculty: facultyData } = req.body;
-    const result = await user_service_1.UserServices.createAdminIntoDB(password, facultyData);
+    const result = await user_service_1.UserServices.createFacultyIntoDB(password, facultyData, next);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

@@ -29,8 +29,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Admin = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const admin_constant_1 = require("./admin.constant");
-const appError_1 = __importDefault(require("../../error/appError"));
 const http_status_1 = __importDefault(require("http-status"));
+const appError_1 = __importDefault(require("./../../error/appError"));
 const UserNameSchema = new mongoose_1.Schema({
     firstName: {
         type: String,
@@ -94,11 +94,40 @@ const AdminSchema = new mongoose_1.Schema({
     profileImage: { type: String, required: [true, "profileImg is required"] },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
-// AdminSchema.pre("save", async function (next) {
-//   const isAdminExists = await Admin.findOne({ email: this.email });
-//   console.log("isAdminExists", isAdminExists);
-// });
-// query validation
+// generating full name
+AdminSchema.virtual("fullName").get(function () {
+    var _a, _b, _c;
+    return (((_a = this === null || this === void 0 ? void 0 : this.name) === null || _a === void 0 ? void 0 : _a.firstName) +
+        "" +
+        ((_b = this === null || this === void 0 ? void 0 : this.name) === null || _b === void 0 ? void 0 : _b.middleName) +
+        "" +
+        ((_c = this === null || this === void 0 ? void 0 : this.name) === null || _c === void 0 ? void 0 : _c.lastName));
+});
+// 🤷‍♀️ get all data (without deleted: true) checking
+AdminSchema.pre("find", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+// 🤷‍♀️ get single data (without deleted: true) checking
+AdminSchema.pre("findOne", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+// 🤷‍♀️ get data by aggregate validation (without deleted: true) checking
+AdminSchema.pre("aggregate", function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+    next();
+});
+// is adminData Exists (in create time checking)
+AdminSchema.pre("save", async function (next) {
+    const isAdminExists = await exports.Admin.findOne({ email: this.email });
+    console.log("isAdminExists", isAdminExists);
+    if (isAdminExists) {
+        throw new appError_1.default(http_status_1.default.CONFLICT, "data already exists!");
+    }
+    next();
+});
+// isQueryExists - query validation (in get time checking)
 AdminSchema.pre("find", async function (next) {
     const query = this.getQuery();
     const isAdminDataExist = await exports.Admin.findOne(query);
@@ -106,16 +135,5 @@ AdminSchema.pre("find", async function (next) {
         throw new appError_1.default(http_status_1.default.NOT_FOUND, "data not exists!");
     }
     next();
-});
-// single id validation
-AdminSchema.pre("findOne", async function (next) {
-    const query = this.getQuery();
-    console.log("middleware query", query);
-    //   const isDataExists = await Admin.find(query);
-    //   console.log("isDataExists", isDataExists);
-    //   if (!isDataExists) {
-    //     throw new AppError(httpStatus.NOT_FOUND, "data not exists!");
-    //   }
-    //   next();
 });
 exports.Admin = mongoose_1.default.model("Admin", AdminSchema);

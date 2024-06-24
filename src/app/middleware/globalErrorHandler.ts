@@ -9,6 +9,8 @@ import handleDuplicateError from "../error/handleDuplicateError";
 import AppError from "../error/appError";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  console.log("err.code", err.code);
+
   // default error setting
   let statusCode = 500;
   let message = "Something went wrong";
@@ -64,6 +66,8 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       },
     ];
   }
+
+  console.log("eee", err);
 
   // ultimate return
   return res.status(statusCode).json({

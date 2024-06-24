@@ -16,7 +16,7 @@ router.post("/create-student", (0, validateRequest_1.default)(student_validation
 // create admin
 router.post("/create-admin", (0, validateRequest_1.default)(admin_validation_1.AdminValidations.createAdminValidationSchema), user_controller_1.UserControllers.createAdmin);
 // create faculty
-router.post("/create-faculty", (0, validateRequest_1.default)(faculty_validation_1.facultyValidations.createFacultyValidationSchema), user_controller_1.UserControllers.createAdmin);
+router.post("/create-faculty", (0, validateRequest_1.default)(faculty_validation_1.facultyValidations.createFacultyValidationSchema), user_controller_1.UserControllers.createFaculty);
 router.get("/", user_controller_1.UserControllers.getAllUser);
 router.get("/:id", user_controller_1.UserControllers.getSingleUser);
 router.delete("/:userId", user_controller_1.UserControllers.deleteUser);

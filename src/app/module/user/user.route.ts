@@ -25,7 +25,7 @@ router.post(
 router.post(
   "/create-faculty",
   validationRequest(facultyValidations.createFacultyValidationSchema),
-  UserControllers.createAdmin
+  UserControllers.createFaculty
 );
 
 router.get("/", UserControllers.getAllUser);

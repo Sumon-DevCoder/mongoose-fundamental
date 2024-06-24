@@ -1,17 +1,7 @@
-import express from "express";
-import validationRequest from "../../middleware/validateRequest";
-import { facultyValidations } from "./faculty.validation";
-import { FacultryControllers } from "./faculty.controller";
-const router = express.Router();
+import { Router } from "express";
 
-router.get("/", FacultryControllers.getAllFaculties);
+const router = Router();
 
-router.get("/:facultyId", FacultryControllers.getSingleFacultry);
+router.get("/");
 
-router.patch(
-  "/:facultyId",
-  validationRequest(facultyValidations.updateFacultyValidationSchema),
-  FacultryControllers.updateSingleFacultry
-);
-
-export const AcademicFacultyRoutes = router;
+export const FacultyRoutes = router;

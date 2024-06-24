@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateAdminId = exports.generateStudentId = void 0;
+exports.generateFacultyId = exports.generateAdminId = exports.generateStudentId = void 0;
 const user_model_1 = require("./user.model");
+const faculty_model_1 = require("./../faculty/faculty.model");
+// Student ID Generate
 const findLastStudentId = async () => {
     const lastStudent = await user_model_1.UserModel.findOne({
         role: "student",
@@ -59,3 +61,26 @@ const generateAdminId = async () => {
     return incrementId;
 };
 exports.generateAdminId = generateAdminId;
+// Faculty ID Generate
+const findLastFacultyId = async () => {
+    const lastFaculty = await faculty_model_1.Faculty.findOne({
+        role: "faculty",
+    }, {
+        id: 1,
+        _id: 0,
+    })
+        .sort({ createdAt: -1 })
+        .lean();
+    return (lastFaculty === null || lastFaculty === void 0 ? void 0 : lastFaculty.id) ? lastFaculty.id : undefined;
+};
+const generateFacultyId = async () => {
+    let currentId = (0).toString();
+    const lastFacultyId = await findLastFacultyId();
+    if (lastFacultyId) {
+        currentId = lastFacultyId.substring(5, 6); // F-0001
+    }
+    let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
+    incrementId = `F-${incrementId}`;
+    return incrementId;
+};
+exports.generateFacultyId = generateFacultyId;

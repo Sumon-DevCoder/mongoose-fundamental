@@ -1,6 +1,8 @@
 import { TErrorSources, TGenericErrorResponse } from "../interface/error";
 
 const handleDuplicateError = (err: any): TGenericErrorResponse => {
+  console.log("dup eerr", err);
+
   // Extract value within double quotes using regex
   const match = err.message.match(/"([^"]*)"/);
 

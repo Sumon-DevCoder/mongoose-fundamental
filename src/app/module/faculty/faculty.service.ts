@@ -7,11 +7,6 @@ import AppError from "../../error/appError";
 import httpStatus from "http-status";
 import { UserModel } from "../user/user.model";
 
-// const getAllAdminFromDB = async () => {
-//   const result = await Admin.find();
-//   return result;
-// };
-
 const getAllFacultyFromDB = async (query: Record<string, unknown>) => {
   const FacultyQuery = new QueryBuilder(Faculty.find(), query)
     .search(facultySearchableFields)

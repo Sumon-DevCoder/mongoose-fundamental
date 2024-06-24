@@ -32,10 +32,14 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 
 // create faculty
-const createFaculty = catchAsync(async (req, res) => {
+const createFaculty = catchAsync(async (req, res, next) => {
   const { password, faculty: facultyData } = req.body;
 
-  const result = await UserServices.createAdminIntoDB(password, facultyData);
+  const result = await UserServices.createFacultyIntoDB(
+    password,
+    facultyData,
+    next
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

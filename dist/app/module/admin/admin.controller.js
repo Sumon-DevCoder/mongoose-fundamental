@@ -18,7 +18,8 @@ const getAllAdmin = (0, catchAsync_1.default)(async (req, res) => {
     });
 });
 const getSingleAdmin = (0, catchAsync_1.default)(async (req, res) => {
-    const result = await admin_service_1.AdminServices.getSingleAdminFromDB(req.params.adminId);
+    const result = await admin_service_1.AdminServices.getSingleAdminFromDB(req.params.id);
+    console.log("result", result);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -27,8 +28,17 @@ const getSingleAdmin = (0, catchAsync_1.default)(async (req, res) => {
     });
 });
 const updateSingleAdmin = (0, catchAsync_1.default)(async (req, res) => {
-    console.log('controller update', req.params.adminId, req.body);
-    const result = await admin_service_1.AdminServices.updateSingleAdminIntoDB(req.params.adminId, req.body);
+    console.log("controller update", req.params.id, req.body);
+    const result = await admin_service_1.AdminServices.updateSingleAdminIntoDB(req.params.id, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Admin single data is updated successfully",
+        data: result,
+    });
+});
+const deleteSingleAdmin = (0, catchAsync_1.default)(async (req, res) => {
+    const result = await admin_service_1.AdminServices.deleteSingleAdminFromDB(req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -40,4 +50,5 @@ exports.AdminControllers = {
     getAllAdmin,
     getSingleAdmin,
     updateSingleAdmin,
+    deleteSingleAdmin,
 };

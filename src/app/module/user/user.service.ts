@@ -6,13 +6,18 @@ import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interfaces";
 import { UserModel } from "./user.model";
-import { generateAdminId, generateStudentId } from "./user.utils";
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from "./user.utils";
 import mongoose from "mongoose";
 import AppError from "../../error/appError";
 import { TAdmin } from "../admin/admin.interface";
 import { TFaculty } from "../faculty/faculty.interface";
 import { Faculty } from "../faculty/faculty.model";
 import { Admin } from "../admin/admin.model";
+import { NextFunction } from "express";
 
 // create student
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -117,14 +122,20 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
 
     return newAdmin;
   } catch (err: any) {
+    // console.log("hello", err);
+
     await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
     await session.endSession(); // ends the session.
-    throw new AppError(400, "admin and user not created"); // throws the error.
+    throw new AppError(400, err?.message); // throws the error.
   }
 };
 
 // create faculty
-const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+const createFacultyIntoDB = async (
+  password: string,
+  payload: TFaculty,
+  next: NextFunction
+) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -135,7 +146,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   userData.role = "faculty";
 
   // set mannually generate id
-  // userData.id = await generateAdminId();
+  userData.id = await generateFacultyId();
 
   // Transaction Initialization
   const session = await mongoose.startSession();
@@ -165,11 +176,12 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     await session.commitTransaction(); // if admin and user create successfully commits transaction to save database permanently
     await session.endSession(); // Ends the database session.
 
-    return newFaculty;
+    return { newFaculty, newUser };
   } catch (err: any) {
     await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
     await session.endSession(); // ends the session.
-    throw new AppError(400, "student and user not created"); // throws the error.
+    // throw new Error(err); // throws the error.
+    next(err);
   }
 };
 

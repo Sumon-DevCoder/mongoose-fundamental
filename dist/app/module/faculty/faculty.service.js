@@ -11,10 +11,6 @@ const faculty_model_1 = require("./faculty.model");
 const appError_1 = __importDefault(require("../../error/appError"));
 const http_status_1 = __importDefault(require("http-status"));
 const user_model_1 = require("../user/user.model");
-// const getAllAdminFromDB = async () => {
-//   const result = await Admin.find();
-//   return result;
-// };
 const getAllFacultyFromDB = async (query) => {
     const FacultyQuery = new QueryBuilder_1.default(faculty_model_1.Faculty.find(), query)
         .search(faculty_constant_1.facultySearchableFields)

@@ -94,13 +94,14 @@ const createAdminIntoDB = async (password, payload) => {
         return newAdmin;
     }
     catch (err) {
+        // console.log("hello", err);
         await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
         await session.endSession(); // ends the session.
-        throw new appError_1.default(400, "admin and user not created"); // throws the error.
+        throw new appError_1.default(400, err === null || err === void 0 ? void 0 : err.message); // throws the error.
     }
 };
 // create faculty
-const createFacultyIntoDB = async (password, payload) => {
+const createFacultyIntoDB = async (password, payload, next) => {
     // create a user object
     const userData = {};
     // if password not given use default password
@@ -108,7 +109,7 @@ const createFacultyIntoDB = async (password, payload) => {
     // set student role
     userData.role = "faculty";
     // set mannually generate id
-    // userData.id = await generateAdminId();
+    userData.id = await (0, user_utils_1.generateFacultyId)();
     // Transaction Initialization
     const session = await mongoose_1.default.startSession();
     try {
@@ -131,12 +132,13 @@ const createFacultyIntoDB = async (password, payload) => {
         }
         await session.commitTransaction(); // if admin and user create successfully commits transaction to save database permanently
         await session.endSession(); // Ends the database session.
-        return newFaculty;
+        return { newFaculty, newUser };
     }
     catch (err) {
         await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
         await session.endSession(); // ends the session.
-        throw new appError_1.default(400, "student and user not created"); // throws the error.
+        // throw new Error(err); // throws the error.
+        next(err);
     }
 };
 // delete

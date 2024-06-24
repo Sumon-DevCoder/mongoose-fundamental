@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const handleDuplicateError = (err) => {
+    console.log("dup eerr", err);
     // Extract value within double quotes using regex
     const match = err.message.match(/"([^"]*)"/);
     // The extracted value will be in the first capturing group
