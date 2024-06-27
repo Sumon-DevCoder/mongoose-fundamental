@@ -6,9 +6,20 @@ import { Faculty } from "./faculty.model";
 import AppError from "../../error/appError";
 import httpStatus from "http-status";
 import { UserModel } from "../user/user.model";
+import isFacultyIdExists from "./faculty.utils";
 
 const getAllFacultyFromDB = async (query: Record<string, unknown>) => {
-  const FacultyQuery = new QueryBuilder(Faculty.find(), query)
+  const FacultyQuery = new QueryBuilder(
+    Faculty.find()
+      .populate({
+        path: "academicDepartment",
+        populate: {
+          path: "academicFaculty",
+        },
+      })
+      .populate("user"),
+    query
+  )
     .search(facultySearchableFields)
     .filter()
     .sort()
@@ -20,7 +31,17 @@ const getAllFacultyFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleFacultyFromDB = async (id: string) => {
-  const result = await Faculty.findById(id);
+  // isIdExists checking
+  await isFacultyIdExists(id);
+
+  const result = await Faculty.findById(id)
+    .populate({
+      path: "academicDepartment",
+      populate: {
+        path: "academicFaculty",
+      },
+    })
+    .populate("user");
   return result;
 };
 
@@ -28,22 +49,46 @@ const updateSingleFacultyIntoDB = async (
   id: string,
   payload: Partial<TFaculty>
 ) => {
-  const result = await Faculty.findByIdAndUpdate(id, payload, {
-    new: true,
-  });
+  // isIdExists checking
+  await isFacultyIdExists(id);
+
+  // non-primitive data descruting
+  const { name, ...remainingFacultyData } = payload;
+
+  const modifiedUpdatedFacultyData: Record<string, unknown> = {
+    ...remainingFacultyData,
+  };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedFacultyData[`name.${key}`] = value;
+    }
+  }
+
+  const result = await Faculty.findByIdAndUpdate(
+    id,
+    modifiedUpdatedFacultyData,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   return result;
 };
 
 const deleteSingleFacultyFromDB = async (id: string) => {
+  // isIdExists checking
+  await isFacultyIdExists(id);
+
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
     // tansacton - 1
-    const deletedFaculty = await Faculty.findOneAndUpdate(
-      { id },
+    const deletedFaculty = await Faculty.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session }
     );
@@ -52,8 +97,10 @@ const deleteSingleFacultyFromDB = async (id: string) => {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete Faculty");
     }
 
-    const deletedUser = await UserModel.findOneAndUpdate(
-      { id },
+    // tansacton - 2
+    const userId = deletedFaculty.user;
+    const deletedUser = await UserModel.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session }
     );
@@ -65,7 +112,7 @@ const deleteSingleFacultyFromDB = async (id: string) => {
     await session.commitTransaction(); // delete parmanently to database
     await session.endSession();
 
-    return deletedUser;
+    return { deletedFaculty, deletedUser };
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();

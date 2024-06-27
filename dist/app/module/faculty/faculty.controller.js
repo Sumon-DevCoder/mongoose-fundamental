@@ -20,8 +20,7 @@ const getAllFaculties = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 // get single data
 const getSingleFacultry = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { facultyId } = req.params;
-    const result = await faculty_service_1.FacultyServices.getSingleFacultyFromDB(facultyId);
+    const result = await faculty_service_1.FacultyServices.getSingleFacultyFromDB(req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -31,7 +30,7 @@ const getSingleFacultry = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 // update single data
 const updateSingleFacultry = (0, catchAsync_1.default)(async (req, res, next) => {
-    const result = await faculty_service_1.FacultyServices.updateSingleFacultyIntoDB(req.params.facultyId, req.body);
+    const result = await faculty_service_1.FacultyServices.updateSingleFacultyIntoDB(req.params.id, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -40,8 +39,7 @@ const updateSingleFacultry = (0, catchAsync_1.default)(async (req, res, next) =>
     });
 });
 const deleteSingleFaculty = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { facultyId } = req.params;
-    const result = await faculty_service_1.FacultyServices.deleteSingleFacultyFromDB(facultyId);
+    const result = await faculty_service_1.FacultyServices.deleteSingleFacultyFromDB(req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class AppError extends Error {
     constructor(statusCode, message, stack = "") {
-        console.log("app err msg", message);
         super(message);
         this.statusCode = statusCode;
         if (stack) {

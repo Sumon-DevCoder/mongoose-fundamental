@@ -117,7 +117,7 @@ const createFacultyIntoDB = async (password, payload, next) => {
         session.startTransaction();
         // create a user (transction - 1)
         const newUser = await user_model_1.UserModel.create([userData], { session });
-        // create a student
+        // create a user
         if (!newUser.length) {
             throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create user");
         }
@@ -125,7 +125,7 @@ const createFacultyIntoDB = async (password, payload, next) => {
             payload.id = newUser[0].id; // embedded id
             payload.user = newUser[0]._id; // reference id
         }
-        // create a student (transction - 2)
+        // create a faculty (transction - 2)
         const newFaculty = await faculty_model_1.Faculty.create([payload], { session });
         if (!newFaculty.length) {
             throw new appError_1.default(http_status_1.default.BAD_REQUEST, "Failed to create faculty");
@@ -137,8 +137,7 @@ const createFacultyIntoDB = async (password, payload, next) => {
     catch (err) {
         await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
         await session.endSession(); // ends the session.
-        // throw new Error(err); // throws the error.
-        next(err);
+        throw new appError_1.default(http_status_1.default.BAD_REQUEST, err.message); // throws the error.
     }
 };
 // delete

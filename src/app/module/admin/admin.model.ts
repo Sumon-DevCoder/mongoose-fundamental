@@ -105,7 +105,6 @@ AdminSchema.pre("aggregate", function (next) {
 AdminSchema.pre("save", async function (next) {
   const isAdminExists = await Admin.findOne({ email: this.email });
 
-  console.log("isAdminExists", isAdminExists);
   if (isAdminExists) {
     throw new AppError(httpStatus.CONFLICT, "data already exists!");
   }

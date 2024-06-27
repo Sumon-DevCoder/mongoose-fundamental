@@ -20,7 +20,6 @@ const createCourse = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 // get all data
 const getAllCourse = (0, catchAsync_1.default)(async (req, res, next) => {
-    console.log("expected query", req.query);
     const result = await course_service_1.CourseServices.getAllCourseFromDB(req.query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -31,7 +30,7 @@ const getAllCourse = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 // get single data
 const getSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
-    const result = await course_service_1.CourseServices.getSingleCourseFromDB(req.params.courseId);
+    const result = await course_service_1.CourseServices.getSingleCourseFromDB(req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -41,7 +40,7 @@ const getSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 // update single data
 const updateSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
-    const result = await course_service_1.CourseServices.updateSingleCourseIntoDB(req.params.courseId, req.body);
+    const result = await course_service_1.CourseServices.updateSingleCourseIntoDB(req.params.id, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -51,7 +50,7 @@ const updateSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 // delete single data
 const deleteSingleCourse = (0, catchAsync_1.default)(async (req, res, next) => {
-    const result = await course_service_1.CourseServices.deleteSingleCourseIntoDB(req.params.courseId);
+    const result = await course_service_1.CourseServices.deleteSingleCourseIntoDB(req.params.id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

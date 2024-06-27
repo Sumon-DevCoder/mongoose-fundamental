@@ -6,15 +6,15 @@ import router from "./app/routes";
 const app: Application = express();
 
 // parser
-app.use(express.json());
-app.use(cors());
+app.use(cors()); // Enables cross-origin requests, interact with browser or client without cors policy
+app.use(express.json()); // enable post request
 
 // application route
 app.use("/api/v1", router);
 
-// route
-app.get("/", async (req: Request, res: Response) => {
-  res.send("server is running...");
+// home route
+app.get("/", (req, res) => {
+  res.send("🚀backend server is running...");
 });
 
 // global error handler

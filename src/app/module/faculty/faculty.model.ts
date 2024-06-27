@@ -54,18 +54,44 @@ FacultySchema.virtual("fullName").get(function () {
 
 // 🤷‍♂️ isFacultyDataExists -- in create time checking
 FacultySchema.pre("save", async function (next) {
-  console.log("hitting");
-
-  const isDepartmentExists = await Faculty.findOne({
-    name: this.name,
+  const isFacultyExists = await Faculty.findOne({
     email: this.email,
   });
 
-  console.log("hitting", isDepartmentExists);
-
-  if (isDepartmentExists) {
-    throw new AppError(httpStatus.CONFLICT, `Department is already exists!`);
+  if (isFacultyExists) {
+    throw new AppError(httpStatus.CONFLICT, `data is already exists!`);
   }
+  next();
+});
+
+// 🤷‍♂️ getAllData without [isDeleted: true] -- in read time checking
+FacultySchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// 🤷‍♂️ getSingleData without [isDeleted: true] -- in read time checking
+FacultySchema.pre("findOne", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// 🤷‍♂️ getAggregateData without [isDeleted: true] -- in read time checking
+FacultySchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+// 🤷‍♂️ isFacultyDataExists -- in get time checking
+FacultySchema.pre("find", async function (next) {
+  const query = this.getQuery();
+
+  const isFacultyDataExists = await Faculty.findOne(query);
+
+  if (!isFacultyDataExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Data not found!");
+  }
+
   next();
 });
 

@@ -35,6 +35,7 @@ const FacultySchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "AcademicDepartment", // ref
         required: true,
+        unique: true,
     },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
@@ -50,14 +51,35 @@ FacultySchema.virtual("fullName").get(function () {
 });
 // 🤷‍♂️ isFacultyDataExists -- in create time checking
 FacultySchema.pre("save", async function (next) {
-    console.log("hitting");
-    const isDepartmentExists = await exports.Faculty.findOne({
-        name: this.name,
+    const isFacultyExists = await exports.Faculty.findOne({
         email: this.email,
     });
-    console.log("hitting", isDepartmentExists);
-    if (isDepartmentExists) {
-        throw new appError_1.default(http_status_1.default.CONFLICT, `Department is already exists!`);
+    if (isFacultyExists) {
+        throw new appError_1.default(http_status_1.default.CONFLICT, `data is already exists!`);
+    }
+    next();
+});
+// 🤷‍♂️ getAllData without [isDeleted: true] -- in read time checking
+FacultySchema.pre("find", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+// 🤷‍♂️ getSingleData without [isDeleted: true] -- in read time checking
+FacultySchema.pre("findOne", function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+// 🤷‍♂️ getAggregateData without [isDeleted: true] -- in read time checking
+FacultySchema.pre("aggregate", function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+    next();
+});
+// 🤷‍♂️ isFacultyDataExists -- in get time checking
+FacultySchema.pre("find", async function (next) {
+    const query = this.getQuery();
+    const isFacultyDataExists = await exports.Faculty.findOne(query);
+    if (!isFacultyDataExists) {
+        throw new appError_1.default(http_status_1.default.NOT_FOUND, "Data not found!");
     }
     next();
 });

@@ -17,8 +17,9 @@ const createCourse = catchAsync(async (req, res, next) => {
 
 // get all data
 const getAllCourse = catchAsync(async (req, res, next) => {
-  console.log("expected query", req.query);
   const result = await CourseServices.getAllCourseFromDB(req.query);
+
+  console.log("result controler", result);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -30,9 +31,7 @@ const getAllCourse = catchAsync(async (req, res, next) => {
 
 // get single data
 const getSingleCourse = catchAsync(async (req, res, next) => {
-  const result = await CourseServices.getSingleCourseFromDB(
-    req.params.courseId
-  );
+  const result = await CourseServices.getSingleCourseFromDB(req.params.id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -45,7 +44,7 @@ const getSingleCourse = catchAsync(async (req, res, next) => {
 // update single data
 const updateSingleCourse = catchAsync(async (req, res, next) => {
   const result = await CourseServices.updateSingleCourseIntoDB(
-    req.params.courseId,
+    req.params.id,
     req.body
   );
 
@@ -59,14 +58,46 @@ const updateSingleCourse = catchAsync(async (req, res, next) => {
 
 // delete single data
 const deleteSingleCourse = catchAsync(async (req, res, next) => {
-  const result = await CourseServices.deleteSingleCourseIntoDB(
-    req.params.courseId
-  );
+  const result = await CourseServices.deleteSingleCourseIntoDB(req.params.id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Course single data is update successfully",
+    data: result,
+  });
+});
+
+// assign-faculties
+const assignFacultiesWithCourse = catchAsync(async (req, res, next) => {
+  const { courseId } = req.params;
+  const { faculties } = req.body;
+  const result = await CourseServices.assignFacultiesWithCoursIntroDB(
+    courseId,
+    faculties
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "assign course faulty data is update successfully",
+    data: result,
+  });
+});
+
+// remove-faculties
+const removeFacultiesWithCourse = catchAsync(async (req, res, next) => {
+  const { courseId } = req.params;
+  const { faculties } = req.body;
+  const result = await CourseServices.removeFacultiesWithCoursIntroDB(
+    courseId,
+    faculties
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "remove courseFaculty data is update successfully",
     data: result,
   });
 });
@@ -77,4 +108,6 @@ export const CourseControllers = {
   updateSingleCourse,
   getAllCourse,
   deleteSingleCourse,
+  assignFacultiesWithCourse,
+  removeFacultiesWithCourse,
 };

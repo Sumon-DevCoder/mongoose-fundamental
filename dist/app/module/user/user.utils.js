@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateFacultyId = exports.generateAdminId = exports.generateStudentId = void 0;
 const user_model_1 = require("./user.model");
-const faculty_model_1 = require("./../faculty/faculty.model");
 // Student ID Generate
 const findLastStudentId = async () => {
     const lastStudent = await user_model_1.UserModel.findOne({
@@ -63,7 +62,7 @@ const generateAdminId = async () => {
 exports.generateAdminId = generateAdminId;
 // Faculty ID Generate
 const findLastFacultyId = async () => {
-    const lastFaculty = await faculty_model_1.Faculty.findOne({
+    const lastFaculty = await user_model_1.UserModel.findOne({
         role: "faculty",
     }, {
         id: 1,

@@ -81,7 +81,7 @@ export const generateAdminId = async () => {
 
 // Faculty ID Generate
 const findLastFacultyId = async () => {
-  const lastFaculty = await Faculty.findOne(
+  const lastFaculty = await UserModel.findOne(
     {
       role: "faculty",
     },
@@ -107,6 +107,5 @@ export const generateFacultyId = async () => {
   let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
 
   incrementId = `F-${incrementId}`;
-
   return incrementId;
 };

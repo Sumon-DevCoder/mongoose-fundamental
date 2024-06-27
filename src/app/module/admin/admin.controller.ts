@@ -17,8 +17,6 @@ const getAllAdmin = catchAsync(async (req, res) => {
 const getSingleAdmin = catchAsync(async (req, res) => {
   const result = await AdminServices.getSingleAdminFromDB(req.params.id);
 
-  console.log("result", result);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -28,7 +26,6 @@ const getSingleAdmin = catchAsync(async (req, res) => {
 });
 
 const updateSingleAdmin = catchAsync(async (req, res) => {
-  console.log("controller update", req.params.id, req.body);
   const result = await AdminServices.updateSingleAdminIntoDB(
     req.params.id,
     req.body

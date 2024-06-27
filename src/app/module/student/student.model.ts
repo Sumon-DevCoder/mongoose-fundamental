@@ -212,8 +212,6 @@ studentSchema.pre("findOne", async function () {
 
   const isStudentExists = await Student.find(query);
 
-  console.log(isStudentExists);
-
   if (!isStudentExists.length) {
     throw new AppError(404, "student not found");
   }

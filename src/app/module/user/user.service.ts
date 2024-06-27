@@ -158,7 +158,7 @@ const createFacultyIntoDB = async (
     // create a user (transction - 1)
     const newUser = await UserModel.create([userData], { session });
 
-    // create a student
+    // create a user
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
     } else {
@@ -166,7 +166,7 @@ const createFacultyIntoDB = async (
       payload.user = newUser[0]._id; // reference id
     }
 
-    // create a student (transction - 2)
+    // create a faculty (transction - 2)
     const newFaculty = await Faculty.create([payload], { session });
 
     if (!newFaculty.length) {
@@ -180,8 +180,7 @@ const createFacultyIntoDB = async (
   } catch (err: any) {
     await session.abortTransaction(); // If any error occurs during the process, aborts the transaction and ends the session.
     await session.endSession(); // ends the session.
-    // throw new Error(err); // throws the error.
-    next(err);
+    throw new AppError(httpStatus.BAD_REQUEST, err.message); // throws the error.
   }
 };
 

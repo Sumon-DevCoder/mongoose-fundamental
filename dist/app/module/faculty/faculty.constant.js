@@ -18,4 +18,6 @@ exports.facultySearchableFields = [
     "name.firstName",
     "name.lastName",
     "name.middleName",
+    "designation",
+    "gender",
 ];

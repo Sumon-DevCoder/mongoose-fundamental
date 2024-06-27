@@ -194,7 +194,6 @@ studentSchema.pre("findOneAndUpdate", async function (next) {
 studentSchema.pre("findOne", async function () {
     const query = this.getQuery();
     const isStudentExists = await exports.Student.find(query);
-    console.log(isStudentExists);
     if (!isStudentExists.length) {
         throw new appError_1.default(404, "student not found");
     }
