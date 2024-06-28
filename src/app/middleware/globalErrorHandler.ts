@@ -13,7 +13,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode = 500;
   let message = "Something went wrong";
 
-  // default errorSouce common pattern for fronted devs
+  // default error common pattern for fronted devs - errorSouce
   let errorSources: TErrorSources = [
     {
       path: "",

@@ -19,6 +19,7 @@ async function main() {
 
 main();
 
+// setup event listener
 process.on("unhandledRejection", () => {
   console.log("🤢 unhandledRejection is detected, shutting down...");
 
